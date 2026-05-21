@@ -1,0 +1,691 @@
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aggiungi Abbonato - AbbonamentiPro</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #f8fff9;
+      background: #06120b;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(3, 18, 9, 0.86), rgba(3, 18, 9, 0.94)),
+        url("https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px);
+      transform: scale(1.04);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 232, 120, 0.26), transparent 34%),
+                  radial-gradient(circle at bottom right, rgba(0, 119, 52, 0.34), transparent 42%);
+      z-index: -1;
+    }
+
+    header {
+      width: 100%;
+      padding: 22px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 35, 16, 0.58);
+      border-bottom: 1px solid rgba(119, 255, 169, 0.22);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .logo span {
+      color: #38e878;
+    }
+
+    nav a {
+      color: #eaffef;
+      text-decoration: none;
+      margin-left: 26px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #38e878;
+    }
+
+    .page {
+      padding: 46px 7% 70px;
+    }
+
+    .top-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .green-banner {
+      display: inline-block;
+      padding: 10px 18px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1ed760, #0c8f3a);
+      color: #021006;
+      font-weight: 900;
+      box-shadow: 0 10px 35px rgba(30, 215, 96, 0.22);
+    }
+
+    h1 {
+      font-size: clamp(36px, 5vw, 62px);
+      line-height: 1.04;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      color: #38e878;
+    }
+
+    .subtitle {
+      color: #d8f6df;
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 720px;
+    }
+
+    .back-dashboard {
+      padding: 14px 20px;
+      border-radius: 15px;
+      background: rgba(56, 232, 120, 0.14);
+      border: 1px solid rgba(96, 255, 155, 0.28);
+      color: #60ff9b;
+      text-decoration: none;
+      font-weight: 900;
+      white-space: nowrap;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .back-dashboard:hover {
+      transform: translateY(-3px);
+      background: rgba(56, 232, 120, 0.22);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 30px;
+      border-radius: 30px;
+      background: rgba(3, 36, 17, 0.76);
+      border: 1px solid rgba(119, 255, 169, 0.22);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.26);
+    }
+
+    .panel-header {
+      margin-bottom: 22px;
+    }
+
+    .panel-header h2 {
+      font-size: 26px;
+      margin-bottom: 7px;
+    }
+
+    .panel-header p {
+      color: #c8eed1;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 900;
+      color: #eaffef;
+      font-size: 13px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 15px;
+      border: 1px solid rgba(119, 255, 169, 0.24);
+      outline: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fff9;
+      font-size: 14px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    select option {
+      background: #082012;
+      color: #f8fff9;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #9fcbaa;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #38e878;
+      box-shadow: 0 0 0 4px rgba(56, 232, 120, 0.12);
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    .btn-row {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 15px 20px;
+      border-radius: 15px;
+      font-size: 15px;
+      font-weight: 900;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #38e878, #119846);
+      color: #021006;
+      box-shadow: 0 12px 30px rgba(56, 232, 120, 0.24);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #eaffef;
+      border: 1px solid rgba(119, 255, 169, 0.22);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .preview-card {
+      position: sticky;
+      top: 110px;
+      overflow: hidden;
+    }
+
+    .member-card {
+      padding: 26px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(56, 232, 120, 0.20), rgba(255, 255, 255, 0.06));
+      border: 1px solid rgba(119, 255, 169, 0.26);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .member-card::after {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      right: -70px;
+      top: -70px;
+      background: rgba(56, 232, 120, 0.13);
+    }
+
+    .card-label {
+      color: #9fcbaa;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+    }
+
+    .avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #38e878, #119846);
+      color: #021006;
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .member-name {
+      font-size: 27px;
+      margin-bottom: 7px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .member-email {
+      color: #d8f6df;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 13px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .preview-item {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .preview-item span {
+      display: block;
+      color: #9fcbaa;
+      font-size: 12px;
+      margin-bottom: 6px;
+      font-weight: 800;
+    }
+
+    .preview-item strong {
+      color: #f8fff9;
+      font-size: 14px;
+    }
+
+    .message {
+      display: none;
+      padding: 15px 16px;
+      border-radius: 18px;
+      background: rgba(56, 232, 120, 0.12);
+      border: 1px solid rgba(96, 255, 155, 0.28);
+      color: #60ff9b;
+      font-weight: 800;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .tips {
+      display: grid;
+      gap: 14px;
+    }
+
+    .tip {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tip h3 {
+      color: #60ff9b;
+      font-size: 16px;
+      margin-bottom: 7px;
+    }
+
+    .tip p {
+      color: #c8eed1;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      header,
+      .top-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav a {
+        margin: 0 16px 0 0;
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-card {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        padding: 34px 4% 54px;
+      }
+
+      .panel {
+        padding: 22px;
+      }
+
+      .form-grid,
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Abbonamenti<span>Pro</span></div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="aggiungi-abbonato.html" class="active">Nuovo abbonato</a>
+      <a href="login-azienda.html">Esci</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="top-section">
+      <div>
+        <div class="green-banner">Registrazione nuovo cliente</div>
+        <h1>Aggiungi un nuovo <span>abbonato</span></h1>
+        <p class="subtitle">
+          Compila i dati del cliente, scegli il piano e genera automaticamente una scheda abbonato
+          pronta per essere salvata nella dashboard aziendale.
+        </p>
+      </div>
+
+      <a href="dashboard.html" class="back-dashboard">← Torna alla dashboard</a>
+    </section>
+
+    <section class="main-grid">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Dati abbonato</h2>
+          <p>Le informazioni inserite verranno salvate nel browser e compariranno nella dashboard.</p>
+        </div>
+
+        <div class="message" id="successMessage">
+          Abbonato aggiunto correttamente. Puoi tornare alla dashboard per visualizzarlo nella lista.
+        </div>
+
+        <form class="form-grid" id="subscriberForm">
+          <div>
+            <label for="name">Nome e cognome</label>
+            <input type="text" id="name" placeholder="Es. Mario Rossi" required />
+          </div>
+
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="cliente@email.it" required />
+          </div>
+
+          <div>
+            <label for="phone">Telefono</label>
+            <input type="tel" id="phone" placeholder="Es. 333 123 4567" />
+          </div>
+
+          <div>
+            <label for="plan">Tipo abbonamento</label>
+            <select id="plan" required>
+              <option value="Mensile" data-months="1" data-price="19,90">Mensile - €19,90</option>
+              <option value="Trimestrale" data-months="3" data-price="49,90">Trimestrale - €49,90</option>
+              <option value="Annuale" data-months="12" data-price="149,90">Annuale - €149,90</option>
+              <option value="Premium" data-months="12" data-price="199,90">Premium - €199,90</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="startDate">Data inizio</label>
+            <input type="date" id="startDate" required />
+          </div>
+
+          <div>
+            <label for="endDate">Data scadenza</label>
+            <input type="date" id="endDate" required />
+          </div>
+
+          <div class="full">
+            <label for="notes">Note interne</label>
+            <textarea id="notes" placeholder="Es. Cliente interessato al rinnovo automatico, preferisce essere contattato via email..."></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button type="submit" class="btn btn-primary">Salva abbonato</button>
+            <button type="button" class="btn btn-secondary" id="autoDateBtn">Calcola scadenza dal piano</button>
+            <button type="reset" class="btn btn-secondary">Pulisci campi</button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="panel preview-card">
+        <div class="panel-header">
+          <h2>Anteprima tessera</h2>
+          <p>La card si aggiorna mentre compili il modulo.</p>
+        </div>
+
+        <div class="member-card">
+          <div class="card-label">Digital member card</div>
+          <div class="avatar" id="previewInitial">A</div>
+          <h3 class="member-name" id="previewName">Nuovo Abbonato</h3>
+          <p class="member-email" id="previewEmail">email@cliente.it</p>
+
+          <div class="preview-grid">
+            <div class="preview-item">
+              <span>Piano</span>
+              <strong id="previewPlan">Mensile</strong>
+            </div>
+
+            <div class="preview-item">
+              <span>Prezzo</span>
+              <strong id="previewPrice">€19,90</strong>
+            </div>
+
+            <div class="preview-item">
+              <span>Inizio</span>
+              <strong id="previewStart">--/--/----</strong>
+            </div>
+
+            <div class="preview-item">
+              <span>Scadenza</span>
+              <strong id="previewEnd">--/--/----</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="tips">
+          <div class="tip">
+            <h3>Perché questa pagina serve</h3>
+            <p>Separare l'inserimento dalla dashboard rende il gestionale più ordinato e più realistico.</p>
+          </div>
+
+          <div class="tip">
+            <h3>Collegamento con la dashboard</h3>
+            <p>Ogni abbonato salvato qui viene memorizzato nello stesso archivio locale usato dalla dashboard.</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("subscriberForm");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const planInput = document.getElementById("plan");
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+    const notesInput = document.getElementById("notes");
+    const autoDateBtn = document.getElementById("autoDateBtn");
+    const successMessage = document.getElementById("successMessage");
+
+    const previewInitial = document.getElementById("previewInitial");
+    const previewName = document.getElementById("previewName");
+    const previewEmail = document.getElementById("previewEmail");
+    const previewPlan = document.getElementById("previewPlan");
+    const previewPrice = document.getElementById("previewPrice");
+    const previewStart = document.getElementById("previewStart");
+    const previewEnd = document.getElementById("previewEnd");
+
+    const today = new Date().toISOString().split("T")[0];
+    startDateInput.value = today;
+
+    function formatDate(dateString) {
+      if (!dateString) {
+        return "--/--/----";
+      }
+
+      return new Date(dateString).toLocaleDateString("it-IT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+    }
+
+    function getSelectedPlanInfo() {
+      const selectedOption = planInput.options[planInput.selectedIndex];
+
+      return {
+        name: selectedOption.value,
+        months: Number(selectedOption.dataset.months),
+        price: selectedOption.dataset.price
+      };
+    }
+
+    function calculateEndDate() {
+      if (!startDateInput.value) {
+        return;
+      }
+
+      const planInfo = getSelectedPlanInfo();
+      const startDate = new Date(startDateInput.value);
+      startDate.setMonth(startDate.getMonth() + planInfo.months);
+      endDateInput.value = startDate.toISOString().split("T")[0];
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const planInfo = getSelectedPlanInfo();
+      const name = nameInput.value.trim() || "Nuovo Abbonato";
+      const email = emailInput.value.trim() || "email@cliente.it";
+
+      previewName.textContent = name;
+      previewEmail.textContent = email;
+      previewInitial.textContent = name.charAt(0).toUpperCase();
+      previewPlan.textContent = planInfo.name;
+      previewPrice.textContent = "€" + planInfo.price;
+      previewStart.textContent = formatDate(startDateInput.value);
+      previewEnd.textContent = formatDate(endDateInput.value);
+    }
+
+    function saveSubscriber(event) {
+      event.preventDefault();
+
+      if (new Date(endDateInput.value) < new Date(startDateInput.value)) {
+        alert("La data di scadenza non può essere precedente alla data di inizio.");
+        return;
+      }
+
+      const subscribers = JSON.parse(localStorage.getItem("subscribers")) || [];
+
+      subscribers.push({
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        plan: getSelectedPlanInfo().name,
+        startDate: startDateInput.value,
+        endDate: endDateInput.value,
+        notes: notesInput.value.trim()
+      });
+
+      localStorage.setItem("subscribers", JSON.stringify(subscribers));
+
+      successMessage.style.display = "block";
+      form.reset();
+      startDateInput.value = today;
+      calculateEndDate();
+      updatePreview();
+
+      setTimeout(function() {
+        successMessage.style.display = "none";
+      }, 4500);
+    }
+
+    nameInput.addEventListener("input", updatePreview);
+    emailInput.addEventListener("input", updatePreview);
+    planInput.addEventListener("change", calculateEndDate);
+    startDateInput.addEventListener("change", calculateEndDate);
+    endDateInput.addEventListener("change", updatePreview);
+    autoDateBtn.addEventListener("click", calculateEndDate);
+    form.addEventListener("submit", saveSubscriber);
+    form.addEventListener("reset", function() {
+      setTimeout(function() {
+        startDateInput.value = today;
+        calculateEndDate();
+        updatePreview();
+      }, 0);
+    });
+
+    calculateEndDate();
+    updatePreview();
+  </script>
+</body>
+</html>

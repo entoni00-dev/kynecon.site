@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestione Abbonamenti Aziendali</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #f8fff9;
+      background: #07140c;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(3, 18, 9, 0.78), rgba(3, 18, 9, 0.88)),
+        url("https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px);
+      transform: scale(1.04);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(32, 201, 91, 0.28), transparent 36%),
+                  radial-gradient(circle at bottom right, rgba(0, 90, 40, 0.38), transparent 40%);
+      z-index: -1;
+    }
+
+    header {
+      width: 100%;
+      padding: 22px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 35, 16, 0.58);
+      border-bottom: 1px solid rgba(119, 255, 169, 0.22);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .logo span {
+      color: #38e878;
+    }
+
+    nav a {
+      color: #eaffef;
+      text-decoration: none;
+      margin-left: 26px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #38e878;
+    }
+
+    .hero {
+      min-height: 88vh;
+      padding: 80px 7%;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 45px;
+    }
+
+    .green-banner {
+      display: inline-block;
+      padding: 10px 18px;
+      margin-bottom: 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1ed760, #0c8f3a);
+      color: #021006;
+      font-weight: 800;
+      box-shadow: 0 10px 35px rgba(30, 215, 96, 0.28);
+    }
+
+    .hero-text h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.02;
+      margin-bottom: 24px;
+    }
+
+    .hero-text h1 span {
+      color: #38e878;
+    }
+
+    .hero-text p {
+      max-width: 620px;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #d8f6df;
+      margin-bottom: 34px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 15px 24px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #38e878, #119846);
+      color: #021006;
+      box-shadow: 0 12px 30px rgba(56, 232, 120, 0.28);
+    }
+
+    .btn-secondary {
+      border: 1px solid rgba(119, 255, 169, 0.42);
+      color: #eaffef;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn:hover {
+      transform: translateY(-4px);
+    }
+
+    .dashboard-card {
+      background: rgba(3, 36, 17, 0.72);
+      border: 1px solid rgba(119, 255, 169, 0.24);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(18px);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .card-top h2 {
+      font-size: 24px;
+    }
+
+    .status {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(56, 232, 120, 0.18);
+      color: #60ff9b;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid rgba(96, 255, 155, 0.35);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-box h3 {
+      color: #38e878;
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+
+    .stat-box p {
+      color: #c8eed1;
+      font-size: 14px;
+    }
+
+    .fake-table {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(119, 255, 169, 0.15);
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #eaffef;
+      font-size: 14px;
+    }
+
+    .table-row:nth-child(1) {
+      background: rgba(56, 232, 120, 0.22);
+      font-weight: 800;
+    }
+
+    .table-row:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .features {
+      padding: 40px 7% 90px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature {
+      padding: 28px;
+      border-radius: 24px;
+      background: rgba(0, 35, 16, 0.62);
+      border: 1px solid rgba(119, 255, 169, 0.2);
+      backdrop-filter: blur(15px);
+    }
+
+    .feature .icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #38e878, #119846);
+      color: #021006;
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    .feature h3 {
+      margin-bottom: 12px;
+      font-size: 21px;
+    }
+
+    .feature p {
+      color: #d8f6df;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 7%;
+      color: #b7dfc0;
+      background: rgba(0, 20, 8, 0.72);
+      border-top: 1px solid rgba(119, 255, 169, 0.18);
+    }
+
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      nav a {
+        margin: 0 9px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 55px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .table-row {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Abbonamenti<span>Pro</span></div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login-azienda.html">Azienda</a>
+      <a href="login-abbonato.html">Abbonato</a>
+      <a href="#funzioni">Funzioni</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <div class="green-banner">Gestionale smart per aziende in abbonamento</div>
+
+        <h1>Gestisci i tuoi <span>abbonati</span> in modo semplice e professionale.</h1>
+
+        <p>
+          Una web app pensata per controllare iscrizioni, scadenze, rinnovi e dati dei clienti.
+          L'azienda accede alla dashboard amministrativa, mentre ogni abbonato può consultare
+          la propria area personale.
+        </p>
+
+        <div class="buttons">
+          <a href="login-azienda.html" class="btn btn-primary">Accesso Azienda</a>
+          <a href="login-abbonato.html" class="btn btn-secondary">Area Abbonato</a>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="card-top">
+          <h2>Dashboard Azienda</h2>
+          <span class="status">LIVE</span>
+        </div>
+
+        <div class="stats">
+          <div class="stat-box">
+            <h3>248</h3>
+            <p>Abbonati totali</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>219</h3>
+            <p>Abbonamenti attivi</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>18</h3>
+            <p>In scadenza</p>
+          </div>
+
+          <div class="stat-box">
+            <h3>11</h3>
+            <p>Scaduti</p>
+          </div>
+        </div>
+
+        <div class="fake-table">
+          <div class="table-row">
+            <span>Cliente</span>
+            <span>Piano</span>
+            <span>Stato</span>
+          </div>
+
+          <div class="table-row">
+            <span>Mario Rossi</span>
+            <span>Annuale</span>
+            <span>Attivo</span>
+          </div>
+
+          <div class="table-row">
+            <span>Giulia Bianchi</span>
+            <span>Mensile</span>
+            <span>In scadenza</span>
+          </div>
+
+          <div class="table-row">
+            <span>Luca Verdi</span>
+            <span>Premium</span>
+            <span>Attivo</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="funzioni">
+      <div class="feature">
+        <div class="icon">✓</div>
+        <h3>Controllo abbonati</h3>
+        <p>
+          Visualizza tutti i clienti registrati, modifica i dati e controlla rapidamente
+          chi ha un abbonamento attivo, sospeso o scaduto.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">⏱</div>
+        <h3>Scadenze automatiche</h3>
+        <p>
+          Tieni sotto controllo le date di rinnovo e individua subito gli abbonamenti
+          vicini alla scadenza.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">👤</div>
+        <h3>Area personale</h3>
+        <p>
+          Ogni abbonato può accedere alla propria area per consultare piano, stato
+          e data di scadenza del servizio.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 AbbonamentiPro - Progetto web per la gestione degli abbonati aziendali</p>
+  </footer>
+</body>
+</html>

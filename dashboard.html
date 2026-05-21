@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Azienda - AbbonamentiPro</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #f8fff9;
+      background: #06120b;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(3, 18, 9, 0.86), rgba(3, 18, 9, 0.94)),
+        url("https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px);
+      transform: scale(1.04);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 232, 120, 0.26), transparent 34%),
+                  radial-gradient(circle at bottom right, rgba(0, 119, 52, 0.34), transparent 42%);
+      z-index: -1;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      padding: 28px 22px;
+      background: rgba(0, 26, 12, 0.78);
+      border-right: 1px solid rgba(119, 255, 169, 0.18);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      margin-bottom: 34px;
+      letter-spacing: 0.4px;
+    }
+
+    .logo span {
+      color: #38e878;
+    }
+
+    .company-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(56, 232, 120, 0.22), rgba(255,255,255,0.06));
+      border: 1px solid rgba(119, 255, 169, 0.22);
+      margin-bottom: 28px;
+    }
+
+    .company-card .avatar {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 17px;
+      background: linear-gradient(135deg, #38e878, #119846);
+      color: #021006;
+      font-weight: 900;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .company-card h3 {
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .company-card p {
+      color: #c8eed1;
+      font-size: 13px;
+    }
+
+    .menu {
+      display: grid;
+      gap: 10px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: #d8f6df;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: 15px;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+    .menu a:hover,
+    .menu a.active {
+      background: rgba(56, 232, 120, 0.18);
+      color: #60ff9b;
+      transform: translateX(4px);
+    }
+
+    .logout {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 24px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 120, 120, 0.28);
+      background: rgba(255, 77, 77, 0.10);
+      color: #ffb4b4;
+      text-decoration: none;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .main {
+      padding: 30px 5%;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .title-block .green-banner {
+      display: inline-block;
+      padding: 9px 16px;
+      margin-bottom: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1ed760, #0c8f3a);
+      color: #021006;
+      font-weight: 900;
+      font-size: 13px;
+      box-shadow: 0 10px 35px rgba(30, 215, 96, 0.20);
+    }
+
+    .title-block h1 {
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+
+    .title-block h1 span {
+      color: #38e878;
+    }
+
+    .title-block p {
+      color: #c8eed1;
+      line-height: 1.5;
+    }
+
+    .today-card {
+      min-width: 230px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(3, 36, 17, 0.72);
+      border: 1px solid rgba(119, 255, 169, 0.22);
+      backdrop-filter: blur(16px);
+      text-align: right;
+    }
+
+    .today-card p {
+      color: #c8eed1;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .today-card h3 {
+      color: #60ff9b;
+      font-size: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(3, 36, 17, 0.72);
+      border: 1px solid rgba(119, 255, 169, 0.18);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.20);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      right: -42px;
+      top: -42px;
+      border-radius: 50%;
+      background: rgba(56, 232, 120, 0.12);
+    }
+
+    .stat-card .label {
+      color: #c8eed1;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card .value {
+      font-size: 36px;
+      font-weight: 900;
+      color: #38e878;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .mini {
+      color: #9fcbaa;
+      font-size: 13px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 0.9fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 24px;
+      border-radius: 28px;
+      background: rgba(3, 36, 17, 0.76);
+      border: 1px solid rgba(119, 255, 169, 0.22);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.26);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .panel-header h2 {
+      font-size: 24px;
+    }
+
+    .panel-header p {
+      color: #c8eed1;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 190px;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 15px;
+      border: 1px solid rgba(119, 255, 169, 0.24);
+      outline: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fff9;
+      font-size: 14px;
+    }
+
+    select option {
+      background: #082012;
+      color: #f8fff9;
+    }
+
+    input::placeholder {
+      color: #9fcbaa;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #38e878;
+      box-shadow: 0 0 0 4px rgba(56, 232, 120, 0.12);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 20px;
+      border: 1px solid rgba(119, 255, 169, 0.14);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(56, 232, 120, 0.18);
+      color: #eaffef;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .client-name {
+      font-weight: 900;
+    }
+
+    .client-email {
+      color: #9fcbaa;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .badge.active {
+      background: rgba(56, 232, 120, 0.16);
+      color: #60ff9b;
+      border: 1px solid rgba(96, 255, 155, 0.30);
+    }
+
+    .badge.expiring {
+      background: rgba(255, 193, 7, 0.14);
+      color: #ffd86b;
+      border: 1px solid rgba(255, 216, 107, 0.30);
+    }
+
+    .badge.expired {
+      background: rgba(255, 77, 77, 0.12);
+      color: #ff9a9a;
+      border: 1px solid rgba(255, 120, 120, 0.30);
+    }
+
+    .action-btn {
+      border: none;
+      cursor: pointer;
+      padding: 9px 11px;
+      border-radius: 12px;
+      margin-right: 6px;
+      color: #f8fff9;
+      font-weight: 900;
+    }
+
+    .renew-btn {
+      background: rgba(56, 232, 120, 0.20);
+      color: #60ff9b;
+    }
+
+    .delete-btn {
+      background: rgba(255, 77, 77, 0.14);
+      color: #ff9a9a;
+    }
+
+    .form-panel h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .form-panel p {
+      color: #c8eed1;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: 900;
+      color: #eaffef;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .btn-add {
+      margin-top: 6px;
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #38e878, #119846);
+      color: #021006;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(56, 232, 120, 0.22);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-add:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(56, 232, 120, 0.32);
+    }
+
+    .insight-box {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .insight-box h3 {
+      color: #60ff9b;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      color: #d8f6df;
+      font-size: 14px;
+    }
+
+    .empty-message {
+      padding: 22px;
+      text-align: center;
+      color: #c8eed1;
+    }
+
+    @media (max-width: 1150px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+      }
+
+      .logout {
+        position: static;
+        display: block;
+        margin-top: 20px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .today-card {
+        width: 100%;
+        text-align: left;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main {
+        padding: 24px 4%;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">Abbonamenti<span>Pro</span></div>
+
+      <div class="company-card">
+        <div class="avatar">A</div>
+        <h3>Azienda Demo</h3>
+        <p>Account amministratore</p>
+      </div>
+
+      <nav class="menu">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="#abbonati">Abbonati</a>
+        <a href="#nuovo-abbonato">Nuovo abbonato</a>
+        <a href="index.html">Home sito</a>
+      </nav>
+
+      <a href="login-azienda.html" class="logout">Esci dall'account</a>
+    </aside>
+
+    <main class="main">
+      <section class="topbar">
+        <div class="title-block">
+          <div class="green-banner">Pannello di controllo aziendale</div>
+          <h1>Gestione <span>abbonati</span></h1>
+          <p>Controlla clienti, piani, scadenze e rinnovi da un'unica dashboard interattiva.</p>
+        </div>
+
+        <div class="today-card">
+          <p>Data di oggi</p>
+          <h3 id="todayDate">--</h3>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <div class="stat-card">
+          <p class="label">Abbonati totali</p>
+          <div class="value" id="totalCount">0</div>
+          <p class="mini">Clienti registrati nel sistema</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="label">Attivi</p>
+          <div class="value" id="activeCount">0</div>
+          <p class="mini">Abbonamenti regolari</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="label">In scadenza</p>
+          <div class="value" id="expiringCount">0</div>
+          <p class="mini">Scadono entro 15 giorni</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="label">Scaduti</p>
+          <div class="value" id="expiredCount">0</div>
+          <p class="mini">Richiedono rinnovo</p>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <div class="panel" id="abbonati">
+          <div class="panel-header">
+            <div>
+              <h2>Lista abbonati</h2>
+              <p>Ricerca, filtra, rinnova o rimuovi un abbonato.</p>
+            </div>
+          </div>
+
+          <div class="controls">
+            <input type="text" id="searchInput" placeholder="Cerca per nome, email o piano..." />
+
+            <select id="statusFilter">
+              <option value="all">Tutti gli stati</option>
+              <option value="active">Solo attivi</option>
+              <option value="expiring">In scadenza</option>
+              <option value="expired">Scaduti</option>
+            </select>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Piano</th>
+                  <th>Inizio</th>
+                  <th>Scadenza</th>
+                  <th>Stato</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody id="subscribersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside class="panel form-panel" id="nuovo-abbonato">
+          <h2>Nuovo abbonato</h2>
+          <p>Aggiungi un cliente al gestionale. Lo stato viene calcolato automaticamente dalla data di scadenza.</p>
+
+          <form class="form-grid" id="subscriberForm">
+            <div>
+              <label for="name">Nome e cognome</label>
+              <input type="text" id="name" placeholder="Es. Mario Rossi" required />
+            </div>
+
+            <div>
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="cliente@email.it" required />
+            </div>
+
+            <div>
+              <label for="plan">Tipo abbonamento</label>
+              <select id="plan" required>
+                <option value="Mensile">Mensile</option>
+                <option value="Trimestrale">Trimestrale</option>
+                <option value="Annuale">Annuale</option>
+                <option value="Premium">Premium</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="startDate">Data inizio</label>
+              <input type="date" id="startDate" required />
+            </div>
+
+            <div>
+              <label for="endDate">Data scadenza</label>
+              <input type="date" id="endDate" required />
+            </div>
+
+            <button type="submit" class="btn-add">Aggiungi abbonato</button>
+          </form>
+
+          <div class="insight-box">
+            <h3>Consiglio gestionale</h3>
+            <p id="insightText">Carica gli abbonati e usa i filtri per individuare subito chi deve rinnovare.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const defaultSubscribers = [
+      {
+        name: "Mario Rossi",
+        email: "mario.rossi@email.it",
+        plan: "Annuale",
+        startDate: "2026-01-10",
+        endDate: "2026-12-10"
+      },
+      {
+        name: "Giulia Bianchi",
+        email: "giulia.bianchi@email.it",
+        plan: "Mensile",
+        startDate: "2026-05-01",
+        endDate: "2026-05-25"
+      },
+      {
+        name: "Luca Verdi",
+        email: "luca.verdi@email.it",
+        plan: "Premium",
+        startDate: "2026-02-15",
+        endDate: "2026-05-15"
+      },
+      {
+        name: "Sara Esposito",
+        email: "sara.esposito@email.it",
+        plan: "Trimestrale",
+        startDate: "2026-04-05",
+        endDate: "2026-07-05"
+      }
+    ];
+
+    let subscribers = JSON.parse(localStorage.getItem("subscribers")) || defaultSubscribers;
+
+    const tableBody = document.getElementById("subscribersTable");
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const subscriberForm = document.getElementById("subscriberForm");
+    const todayDate = document.getElementById("todayDate");
+    const insightText = document.getElementById("insightText");
+
+    const totalCount = document.getElementById("totalCount");
+    const activeCount = document.getElementById("activeCount");
+    const expiringCount = document.getElementById("expiringCount");
+    const expiredCount = document.getElementById("expiredCount");
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    todayDate.textContent = today.toLocaleDateString("it-IT", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    });
+
+    function saveSubscribers() {
+      localStorage.setItem("subscribers", JSON.stringify(subscribers));
+    }
+
+    function getStatus(endDate) {
+      const end = new Date(endDate);
+      end.setHours(0, 0, 0, 0);
+
+      const differenceMs = end - today;
+      const daysLeft = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
+
+      if (daysLeft < 0) {
+        return {
+          key: "expired",
+          text: "Scaduto",
+          className: "expired"
+        };
+      }
+
+      if (daysLeft <= 15) {
+        return {
+          key: "expiring",
+          text: "In scadenza",
+          className: "expiring"
+        };
+      }
+
+      return {
+        key: "active",
+        text: "Attivo",
+        className: "active"
+      };
+    }
+
+    function formatDate(dateString) {
+      return new Date(dateString).toLocaleDateString("it-IT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+    }
+
+    function renderStats() {
+      const statuses = subscribers.map(subscriber => getStatus(subscriber.endDate).key);
+
+      totalCount.textContent = subscribers.length;
+      activeCount.textContent = statuses.filter(status => status === "active").length;
+      expiringCount.textContent = statuses.filter(status => status === "expiring").length;
+      expiredCount.textContent = statuses.filter(status => status === "expired").length;
+
+      const expired = Number(expiredCount.textContent);
+      const expiring = Number(expiringCount.textContent);
+
+      if (expired > 0) {
+        insightText.textContent = "Ci sono abbonamenti scaduti: conviene contattare questi clienti per proporre il rinnovo.";
+      } else if (expiring > 0) {
+        insightText.textContent = "Ci sono abbonamenti in scadenza entro 15 giorni: ottimo momento per inviare un promemoria.";
+      } else {
+        insightText.textContent = "Situazione stabile: tutti gli abbonamenti risultano sotto controllo.";
+      }
+    }
+
+    function renderTable() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+      const selectedStatus = statusFilter.value;
+
+      const filteredSubscribers = subscribers.filter(subscriber => {
+        const status = getStatus(subscriber.endDate).key;
+        const matchesSearch =
+          subscriber.name.toLowerCase().includes(searchValue) ||
+          subscriber.email.toLowerCase().includes(searchValue) ||
+          subscriber.plan.toLowerCase().includes(searchValue);
+
+        const matchesStatus = selectedStatus === "all" || status === selectedStatus;
+
+        return matchesSearch && matchesStatus;
+      });
+
+      tableBody.innerHTML = "";
+
+      if (filteredSubscribers.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-message">Nessun abbonato trovato con questi filtri.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      filteredSubscribers.forEach((subscriber, index) => {
+        const realIndex = subscribers.indexOf(subscriber);
+        const status = getStatus(subscriber.endDate);
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>
+            <div class="client-name">${subscriber.name}</div>
+            <div class="client-email">${subscriber.email}</div>
+          </td>
+          <td>${subscriber.plan}</td>
+          <td>${formatDate(subscriber.startDate)}</td>
+          <td>${formatDate(subscriber.endDate)}</td>
+          <td><span class="badge ${status.className}">${status.text}</span></td>
+          <td>
+            <button class="action-btn renew-btn" onclick="renewSubscriber(${realIndex})">Rinnova</button>
+            <button class="action-btn delete-btn" onclick="deleteSubscriber(${realIndex})">Elimina</button>
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    function renderDashboard() {
+      renderStats();
+      renderTable();
+      saveSubscribers();
+    }
+
+    function renewSubscriber(index) {
+      const currentEnd = new Date(subscribers[index].endDate);
+      currentEnd.setMonth(currentEnd.getMonth() + 1);
+      subscribers[index].endDate = currentEnd.toISOString().split("T")[0];
+      renderDashboard();
+    }
+
+    function deleteSubscriber(index) {
+      const confirmDelete = confirm("Vuoi eliminare questo abbonato?");
+
+      if (confirmDelete) {
+        subscribers.splice(index, 1);
+        renderDashboard();
+      }
+    }
+
+    subscriberForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const plan = document.getElementById("plan").value;
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+
+      if (new Date(endDate) < new Date(startDate)) {
+        alert("La data di scadenza non può essere precedente alla data di inizio.");
+        return;
+      }
+
+      subscribers.push({
+        name,
+        email,
+        plan,
+        startDate,
+        endDate
+      });
+
+      subscriberForm.reset();
+      renderDashboard();
+    });
+
+    searchInput.addEventListener("input", renderTable);
+    statusFilter.addEventListener("change", renderTable);
+
+    renderDashboard();
+  </script>
+</body>
+</html>

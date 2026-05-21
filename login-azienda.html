@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accesso Azienda - AbbonamentiPro</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #f8fff9;
+      background: #07140c;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(3, 18, 9, 0.82), rgba(3, 18, 9, 0.92)),
+        url("https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px);
+      transform: scale(1.04);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(32, 201, 91, 0.28), transparent 36%),
+                  radial-gradient(circle at bottom right, rgba(0, 90, 40, 0.38), transparent 40%);
+      z-index: -1;
+    }
+
+    header {
+      width: 100%;
+      padding: 22px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 35, 16, 0.58);
+      border-bottom: 1px solid rgba(119, 255, 169, 0.22);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .logo span {
+      color: #38e878;
+    }
+
+    nav a {
+      color: #eaffef;
+      text-decoration: none;
+      margin-left: 26px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #38e878;
+    }
+
+    .login-page {
+      min-height: calc(100vh - 84px);
+      padding: 70px 7%;
+      display: grid;
+      grid-template-columns: 1fr 460px;
+      align-items: center;
+      gap: 55px;
+    }
+
+    .green-banner {
+      display: inline-block;
+      padding: 10px 18px;
+      margin-bottom: 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1ed760, #0c8f3a);
+      color: #021006;
+      font-weight: 800;
+      box-shadow: 0 10px 35px rgba(30, 215, 96, 0.28);
+    }
+
+    .intro h1 {
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 1.04;
+      margin-bottom: 22px;
+    }
+
+    .intro h1 span {
+      color: #38e878;
+    }
+
+    .intro p {
+      max-width: 650px;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #d8f6df;
+      margin-bottom: 28px;
+    }
+
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(180px, 1fr));
+      gap: 15px;
+      max-width: 650px;
+    }
+
+    .benefit {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(0, 35, 16, 0.56);
+      border: 1px solid rgba(119, 255, 169, 0.18);
+      backdrop-filter: blur(12px);
+      color: #eaffef;
+      font-weight: 700;
+    }
+
+    .benefit span {
+      color: #38e878;
+      margin-right: 8px;
+    }
+
+    .login-card {
+      width: 100%;
+      padding: 34px;
+      border-radius: 30px;
+      background: rgba(3, 36, 17, 0.76);
+      border: 1px solid rgba(119, 255, 169, 0.24);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.38);
+      backdrop-filter: blur(18px);
+    }
+
+    .login-card h2 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .login-card .subtitle {
+      color: #c8eed1;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .error-message {
+      display: none;
+      margin-bottom: 18px;
+      padding: 13px 15px;
+      border-radius: 14px;
+      background: rgba(255, 77, 77, 0.12);
+      border: 1px solid rgba(255, 120, 120, 0.28);
+      color: #ffb4b4;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #eaffef;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(119, 255, 169, 0.25);
+      outline: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #f8fff9;
+      font-size: 15px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    input::placeholder {
+      color: #9fcbaa;
+    }
+
+    input:focus {
+      border-color: #38e878;
+      box-shadow: 0 0 0 4px rgba(56, 232, 120, 0.13);
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0 24px;
+      font-size: 14px;
+      color: #c8eed1;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .remember input {
+      width: auto;
+      accent-color: #38e878;
+    }
+
+    .options a {
+      color: #38e878;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #38e878, #119846);
+      color: #021006;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(56, 232, 120, 0.28);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(56, 232, 120, 0.36);
+    }
+
+    .register-link {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: 15px;
+      border: 1px solid rgba(119, 255, 169, 0.35);
+      background: rgba(255, 255, 255, 0.07);
+      color: #eaffef;
+      text-align: center;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 900;
+      transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .register-link:hover {
+      transform: translateY(-3px);
+      background: rgba(56, 232, 120, 0.13);
+      border-color: #38e878;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 26px 0;
+      color: #9fcbaa;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(119, 255, 169, 0.18);
+    }
+
+    .demo-access {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(56, 232, 120, 0.10);
+      border: 1px solid rgba(96, 255, 155, 0.22);
+      color: #d8f6df;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .demo-access strong {
+      color: #60ff9b;
+    }
+
+    .back-home {
+      display: inline-block;
+      margin-top: 22px;
+      color: #38e878;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    @media (max-width: 950px) {
+      header {
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      nav a {
+        margin: 0 9px;
+      }
+
+      .login-page {
+        grid-template-columns: 1fr;
+        padding-top: 50px;
+      }
+
+      .login-card {
+        max-width: 520px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .benefits {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        padding: 26px;
+      }
+
+      .options {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Abbonamenti<span>Pro</span></div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login-azienda.html" class="active">Azienda</a>
+      <a href="login-abbonato.html">Abbonato</a>
+      <a href="index.html#funzioni">Funzioni</a>
+    </nav>
+  </header>
+
+  <main class="login-page">
+    <section class="intro">
+      <div class="green-banner">Accesso amministrativo aziendale</div>
+
+      <h1>Accedi alla tua <span>dashboard</span> e gestisci gli abbonati.</h1>
+
+      <p>
+        Da questa sezione l'azienda può controllare clienti, scadenze, rinnovi,
+        abbonamenti attivi e profili in scadenza tramite un pannello semplice e ordinato.
+      </p>
+
+      <div class="benefits">
+        <div class="benefit"><span>✓</span>Gestione clienti</div>
+        <div class="benefit"><span>✓</span>Controllo scadenze</div>
+        <div class="benefit"><span>✓</span>Rinnovi abbonamenti</div>
+        <div class="benefit"><span>✓</span>Dashboard aziendale</div>
+      </div>
+    </section>
+
+    <section class="login-card">
+      <h2>Login Azienda</h2>
+      <p class="subtitle">Inserisci le credenziali aziendali per accedere al pannello di gestione.</p>
+
+      <div class="error-message" id="errorMessage">
+        Email o password non corretti. Usa le credenziali demo indicate sotto.
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email aziendale</label>
+          <input type="email" id="email" placeholder="azienda@abbonamentipro.it" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Inserisci password" required />
+        </div>
+
+        <div class="options">
+          <label class="remember">
+            <input type="checkbox" />
+            Ricordami
+          </label>
+
+          <a href="#">Password dimenticata?</a>
+        </div>
+
+        <button type="submit" class="btn-login">Entra nella dashboard</button>
+
+        <a href="register-azienda.html" class="register-link">Crea un account azienda</a>
+      </form>
+
+      <div class="divider">ACCESSO DEMO</div>
+
+      <div class="demo-access">
+        <p><strong>Email:</strong> azienda@demo.it</p>
+        <p><strong>Password:</strong> admin123</p>
+      </div>
+
+      <a href="index.html" class="back-home">← Torna alla home</a>
+    </section>
+  </main>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const errorMessage = document.getElementById("errorMessage");
+
+    loginForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (email === "azienda@demo.it" && password === "admin123") {
+        window.location.href = "dashboard.html";
+      } else {
+        errorMessage.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
